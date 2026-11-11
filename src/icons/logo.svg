@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19"/>
+      <stop offset="100%" stop-color="#1a1033"/>
+    </linearGradient>
+    <linearGradient id="astGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bgGrad)" stroke="url(#astGrad)" stroke-width="3"/>
+  <!-- Faceted Asteroid Core -->
+  <polygon points="24,66 36,38 66,30 78,52 68,86 42,96" fill="#1e293b" stroke="url(#astGrad)" stroke-width="3" stroke-linejoin="round"/>
+  <polyline points="36,38 54,60 66,30" fill="none" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.7"/>
+  <polyline points="24,66 54,60 68,86" fill="none" stroke="#a855f7" stroke-width="2" stroke-opacity="0.7"/>
+  <line x1="54" y1="60" x2="42" y2="96" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.5"/>
+  <!-- AST Syntax Tree Branches Erupting from Asteroid -->
+  <line x1="66" y1="48" x2="96" y2="26" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/>
+  <line x1="82" y1="36" x2="104" y2="48" stroke="#a855f7" stroke-width="3" stroke-linecap="round"/>
+  <line x1="72" y1="68" x2="102" y2="76" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="96" cy="26" r="6" fill="#38bdf8"/>
+  <circle cx="104" cy="48" r="5" fill="#c084fc"/>
+  <circle cx="102" cy="76" r="5.5" fill="#38bdf8"/>
+  <!-- Code Brackets -->
+  <path d="M 84 92 L 76 100 L 84 108" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 100 92 L 108 100 L 100 108" fill="none" stroke="#c084fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

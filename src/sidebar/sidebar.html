@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ASTeroids $0 Inspector Sidebar</title>
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+<body>
+  <div class="sidebar-shell">
+    <header class="sidebar-toolbar">
+      <div class="node-badge" id="selected-node-tag">&lt;element&gt;</div>
+      <div class="toolbar-actions">
+        <button id="btn-local-pass" class="btn-sm btn-local" title="Instant local AST + heuristic unminify (<50ms)">⚡ Fast AST</button>
+        <button id="btn-llm-pass" class="btn-sm btn-llm" title="Semantic rename with Hugging Face openai/gpt-oss-120b:cheapest">✨ AI Humanize $0</button>
+      </div>
+    </header>
+
+    <div id="sidebar-status" class="status-bar">Select any DOM node in the Inspector to inspect its code &amp; state.</div>
+
+    <section class="pane-section">
+      <div class="section-header">
+        <span>Humanized DOM &amp; Bound Component / Handlers</span>
+        <button id="btn-copy-sidebar" class="btn-xs">Copy</button>
+      </div>
+      <pre id="code-output" class="code-box"></pre>
+    </section>
+
+    <section class="pane-section" id="renames-section">
+      <div class="section-header">
+        <span>Semantic Identifier Map</span>
+        <span id="rename-count" class="count-pill">0</span>
+      </div>
+      <div id="rename-list" class="rename-list"></div>
+    </section>
+  </div>
+  <script type="module" src="sidebar.js"></script>
+</body>
+</html>

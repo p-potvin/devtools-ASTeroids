@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ASTeroids — DevTools Inspector &amp; Semantic Decompiler</title>
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top DevTools Toolbar -->
+    <header class="topbar">
+      <div class="brand">
+        <img src="../icons/icon-32.png" alt="ASTeroids" class="brand-icon" />
+        <span class="brand-title">ASTeroids</span>
+        <span class="model-pill" id="active-model-pill">openai/gpt-oss-120b:cheapest</span>
+      </div>
+
+      <div class="toolbar-controls">
+        <button id="btn-scan-page" class="btn" title="Refresh DOM Snapshot &amp; Page Scripts">
+          🔄 Scan Page
+        </button>
+        <button id="btn-Inspect-el" class="btn" title="Pull currently selected $0 element from Inspector">
+          🎯 Pull Inspector $0
+        </button>
+        <div class="divider"></div>
+        <button id="btn-local-ast" class="btn btn-cyan" title="Instant local AST unminify + heuristic rename (<50ms, no API call)">
+          ⚡ Fast AST Pass
+        </button>
+        <button id="btn-llm-run" class="btn btn-primary" title="Run Hugging Face LLM Semantic Rename (Alt+Shift+U)">
+          ✨ AI Humanize (<kbd>Alt+Shift+U</kbd>)
+        </button>
+        <button id="btn-abort" class="btn btn-danger hidden" title="Abort active Hugging Face inference">
+          ⏹ Stop
+        </button>
+        <div class="divider"></div>
+        <button id="btn-inject-sourcemap" class="btn btn-secondary" title="Inject inline SourceMap v3 into inspected page for native Debugger breakpoints">
+          🗺️ Inject Debugger SourceMap
+        </button>
+        <button id="btn-settings" class="btn" title="Configure Hugging Face Token &amp; Model">
+          ⚙️ HF Token
+        </button>
+      </div>
+    </header>
+
+    <!-- Progress & Status Strip -->
+    <div class="status-strip">
+      <div class="status-text" id="status-message">
+        Ready. Select a DOM node or script on the left, or press Alt+Shift+U to run ASTeroids.
+      </div>
+      <div class="progress-wrap hidden" id="progress-wrap">
+        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+      </div>
+      <div class="metrics-strip" id="metrics-strip">
+        <span id="metric-ids">0 minified IDs</span>
+        <span>•</span>
+        <span id="metric-chunks">0 chunks</span>
+        <span>•</span>
+        <span id="metric-vlq">SourceMap v3 ready</span>
+      </div>
+    </div>
+
+    <!-- 3-Column Inspector & Decompiler Workspace -->
+    <main class="workspace">
+      <!-- Left Column: Inspector DOM Snapshot + Loaded Scripts + Sample Sandbox -->
+      <aside class="sidebar-left">
+        <div class="pane-title">
+          <span>Inspector &amp; Scripts Tree</span>
+          <span class="pill-count" id="resource-count">0</span>
+        </div>
+        <div class="filter-box">
+          <input type="search" id="resource-filter" placeholder="Filter DOM / scripts..." />
+        </div>
+        <ul class="resource-list" id="resource-list"></ul>
+      </aside>
+
+      <!-- Center Column: Code Viewer / Editor with View Tabs -->
+      <section class="center-editor">
+        <div class="editor-tabs">
+          <div class="tab-group">
+            <button class="tab-btn active" data-view="humanized">Humanized Code</button>
+            <button class="tab-btn" data-view="inline-map">Code + Inline SourceMap</button>
+            <button class="tab-btn" data-view="sourcemap-json">SourceMap v3 JSON</button>
+            <button class="tab-btn" data-view="original">Original Minified</button>
+          </div>
+          <div class="editor-actions">
+            <input type="search" id="code-search" class="code-search" placeholder="Find in code..." />
+            <button id="btn-copy-code" class="btn-xs">📋 Copy</button>
+            <button id="btn-download-js" class="btn-xs">⬇ .js</button>
+            <button id="btn-download-map" class="btn-xs">⬇ .js.map</button>
+          </div>
+        </div>
+
+        <div class="code-viewport" id="code-viewport">
+          <div class="line-numbers" id="line-numbers">1</div>
+          <textarea
+            id="code-editor"
+            class="code-textarea"
+            spellcheck="false"
+            wrap="off"
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- Right Column: Semantic Identifier Rename Map & SourceMap Telemetry -->
+      <aside class="sidebar-right">
+        <div class="pane-title">
+          <span>Semantic Rename Map</span>
+          <span class="pill-count" id="renamed-count">0</span>
+        </div>
+        <div class="rename-Controls">
+          <input type="search" id="rename-filter" placeholder="Search old / new identifier..." />
+          <button id="btn-reapply-map" class="btn-xs" title="Re-apply edited identifier names to AST &amp; SourceMap">
+            Apply Edits
+          </button>
+        </div>
+        <div class="rename-table-wrap" id="rename-table-wrap">
+          <div class="empty-hint">
+            Run <strong>⚡ Fast AST Pass</strong> or <strong>✨ AI Humanize</strong> to populate semantic identifier mappings.
+          </div>
+        </div>
+
+        <div class="sourcemap-card">
+          <div class="pane-title">
+            <span>SourceMap v3 Inspector</span>
+            <span class="badge-v3">VLQ v3</span>
+          </div>
+          <div class="sm-stats" id="sm-stats">
+            <div><span>File:</span> <code id="sm-file">-</code></div>
+            <div><span>Names Array:</span> <code id="sm-names-count">0</code></div>
+            <div><span>VLQ Mappings:</span> <code id="sm-mappings-len">0 chars</code></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- In-Panel HF Settings Modal -->
+    <div id="settings-modal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>ASTeroids — Hugging Face Inference Settings</h2>
+          <button id="btn-close-modal" class="btn-xs">✕</button>
+        </div>
+        <div class="modal-body">
+          <label class="modal-field">
+            <span>Hugging Face API Token (<code>hf_...</code>)</span>
+            <input type="password" id="modal-hf-token" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+          </label>
+          <label class="modal-field">
+            <span>Inference Provider Model</span>
+            <input type="text" id="modal-model" value="openai/gpt-oss-120b:cheapest" />
+          </label>
+          <label class="modal-field">
+            <span>Router Endpoint</span>
+            <input type="url" id="modal-endpoint" value="https://router.huggingface.co/v1/chat/completions" />
+          </label>
+          <div class="modal-grid">
+            <label class="modal-field">
+              <span>Scope Chunk Size (chars)</span>
+              <input type="number" id="modal-chunk-size" value="3200" min="1000" max="12000" />
+            </label>
+            <label class="modal-field">
+              <span>Parallel Requests</span>
+              <input type="number" id="modal-concurrency" value="3" min="1" max="8" />
+            </label>
+          </div>
+          <div id="modal-status" class="modal-status"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-modal-test" class="btn btn-cyan">Test HF Router</button>
+          <button id="btn-modal-save" class="btn btn-primary">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

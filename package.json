@@ -1,0 +1,38 @@
+{
+  "name": "devtools-asteroids",
+  "version": "0.1.2",
+  "description": "ASTeroids (devtools-ASTeroids) — AST + LLM semantic JavaScript/DOM unminifier, beautifier, and SourceMap v3 generator for Firefox & Chrome DevTools.",
+  "license": "MPL-2.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/p-potvin/devtools-asteroids.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test-engine.mjs",
+    "dist": "npm version patch --no-git-tag-version && node scripts/dist.mjs"
+  },
+  "keywords": [
+    "devtools",
+    "webextension",
+    "firefox",
+    "chrome",
+    "unminify",
+    "deobfuscate",
+    "ast",
+    "sourcemap",
+    "huggingface",
+    "gpt-oss-120b"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "optionalDependencies": {
+    "@babel/generator": "^7.26.0",
+    "@babel/parser": "^7.26.0",
+    "@babel/traverse": "^7.26.0",
+    "esbuild": "^0.24.0",
+    "webcrack": "^2.16.0"
+  }
+}

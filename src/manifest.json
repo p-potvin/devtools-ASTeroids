@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "devtools-ASTeroids",
+  "short_name": "ASTeroids",
+  "version": "0.1.2",
+  "description": "Humanize minified code in DevTools with AST deobfuscation, LLM semantic renaming, and SourceMap v3 generation.",
+  "author": "Clopeux",
+  "homepage_url": "https://github.com/p-potvin/devtools-asteroids",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "ASTeroids — DevTools Settings",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "options_ui": {
+    "page": "popup/popup.html",
+    "open_in_tab": true
+  },
+  "devtools_page": "devtools.html",
+  "background": {
+    "service_worker": "background/background.js",
+    "scripts": [
+      "background/background.js"
+    ],
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://router.huggingface.co/*"
+  ],
+  "commands": {
+    "trigger-asteroids": {
+      "suggested_key": {
+        "default": "Alt+Shift+U",
+        "mac": "Alt+Shift+U"
+      },
+      "description": "Trigger ASTeroids semantic unminification on active DevTools target"
+    }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "devtools-asteroids@vaultwares",
+      "strict_min_version": "121.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  }
+}

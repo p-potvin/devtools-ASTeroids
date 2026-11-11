@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTeroids — Configuration</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-shell">
+    <header class="popup-header">
+      <img src="../icons/icon-48.png" alt="ASTeroids Logo" class="brand-logo" />
+      <div>
+        <h1>ASTeroids <span class="badge">MV3</span></h1>
+        <p class="subtitle">devtools-ASTeroids • AST + LLM Decompiler</p>
+      </div>
+    </header>
+
+    <form id="settings-form" class="settings-form">
+      <label class="field">
+        <span class="field-label">Hugging Face API Token (<code>hf_...</code>)</span>
+        <div class="input-row">
+          <input
+            type="password"
+            id="hfToken"
+            placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" id="toggle-token" class="btn-icon" title="Show/Hide Token">👁</button>
+        </div>
+        <span class="field-hint">Stored locally in <code>storage.local</code>. Never sent anywhere except Hugging Face Router.</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Inference Provider Model ID</span>
+        <input
+          type="text"
+          id="model"
+          value="openai/gpt-oss-120b:cheapest"
+          spellcheck="false"
+        />
+        <span class="field-hint">Default: <code>openai/gpt-oss-120b:cheapest</code> (or append <code>:fastest</code> / <code>:cerebras</code> / <code>:groq</code>)</span>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Router Endpoint URL</span>
+        <input
+          type="url"
+          id="endpoint"
+          value="https://router.huggingface.co/v1/chat/completions"
+          spellcheck="false"
+        />
+      </label>
+
+      <div class="grid-2">
+        <label class="field">
+          <span class="field-label">Chunk Size (chars)</span>
+          <input type="number" id="chunkSize" min="1000" max="12000" step="200" value="3200" />
+        </label>
+        <label class="field">
+          <span class="field-label">Parallel Calls</span>
+          <input type="number" id="concurrency" min="1" max="8" step="1" value="3" />
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button type="submit" class="btn-primary">Save Settings</button>
+        <button type="button" id="test-btn" class="btn-secondary">Test HF Router</button>
+        <button type="button" id="clear-cache-btn" class="btn-ghost" title="Clear cached AST renames">Clear Cache</button>
+      </div>
+
+      <div id="status-banner" class="status-banner hidden"></div>
+    </form>
+
+    <footer class="popup-footer">
+      <span>Shortcut: <kbd>Alt+Shift+U</kbd> inside DevTools</span>
+      <span>SourceMap v3 Enabled</span>
+    </footer>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
